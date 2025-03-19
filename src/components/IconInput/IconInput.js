@@ -8,16 +8,20 @@ import VisuallyHidden from "../VisuallyHidden";
 
 const STYLES = {
   small: {
-    height: "24px",
-    iconSize: "16px",
+    fontSize: 14,
+    height: 24,
+    iconSize: 16,
+    borderWidth: 1,
   },
   large: {
-    height: "36px",
-    iconSize: "24px",
+    fontSize: 18,
+    height: 36,
+    iconSize: 24,
+    borderWidth: 2,
   },
 };
 
-const IconInput = ({ label, icon, width = 250, size, placeholder }) => {
+const IconInput = ({ label, icon, width = 250, size, ...props }) => {
   const styles = STYLES[size];
 
   if (!styles) {
@@ -25,23 +29,29 @@ const IconInput = ({ label, icon, width = 250, size, placeholder }) => {
   }
 
   return (
-    <Wrapper style={{ "--width": `${width}px`, "--height": styles.height }}>
+    <Wrapper>
       <VisuallyHidden>{label}</VisuallyHidden>
-      <Search placeholder={placeholder}></Search>
-      <FocusBorder />
-      <IconWrapper style={{ "--size": styles.iconSize }}>
+      <IconWrapper style={{ "--size": `${styles.iconSize}px` }}>
         <Icon id={icon} size={styles.iconSize} strokeWidth={2}></Icon>
       </IconWrapper>
+      <TextInput
+        style={{
+          "--width": `${width}px`,
+          "--height": `${styles.height / 16}rem`,
+          "--border-width": `${styles.borderWidth}px`,
+          "--font-size": `${styles.fontSize / 16}rem`,
+        }}
+        {...props}
+      ></TextInput>
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.label`
+  display: block;
   position: relative;
-  width: var(--width);
-  height: var(--height);
-  border-bottom: 2px solid ${COLORS.black};
-  color: ${COLORS.gray500};
+  color: ${COLORS.gray700};
+
   &:hover {
     color: ${COLORS.black};
   }
@@ -49,38 +59,27 @@ const Wrapper = styled.div`
 
 const IconWrapper = styled.div`
   position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
   width: var(--size);
   height: var(--size);
-  top: 0;
-  left: 0;
-  bottom: 0;
-  margin: auto;
-  pointer-events: none;
-  color: inherit;
 `;
 
-const Search = styled.input`
-  inset: 0;
-  padding-left: 24px;
-  position: absolute;
+const TextInput = styled.input`
+  width: var(--width);
+  height: var(--height);
+  font-size: var(--font-size);
   border: none;
+  border-bottom: var(--border-width) solid ${COLORS.black};
+  padding-left: var(--height);
   color: inherit;
-  font-weight: bold;
+  font-weight: 700;
+  outline-offset: 4px;
+
   &::placeholder {
     color: ${COLORS.gray500};
-    font-weight: normal;
-  }
-  &:focus {
-    outline: none;
-  }
-`;
-
-const FocusBorder = styled.div`
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  ${Search}:focus + & {
-    outline: 5px auto -webkit-focus-ring-color;
+    font-weight: 400;
   }
 `;
 
